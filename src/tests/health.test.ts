@@ -10,6 +10,7 @@ import { createPiRuntime } from "../adapters/pi.js";
 import { createDroidRuntime } from "../adapters/droid.js";
 import { createMastraCodeRuntime } from "../adapters/mastracode.js";
 import { createCopilotRuntime } from "../adapters/copilot.js";
+import { createAgyRuntime } from "../adapters/agy.js";
 
 const { execAbortableMock } = vi.hoisted(() => ({
   execAbortableMock: vi.fn(),
@@ -465,6 +466,67 @@ describe("healthCheck", () => {
       process.env.COPILOT_GITHUB_TOKEN = origCopilot;
       process.env.GH_TOKEN = origGH;
       process.env.GITHUB_TOKEN = origGithub;
+    });
+  });
+
+  describe("agy", () => {
+    it("returns not installed when which fails", async () => {
+      execAbortableMock.mockRejectedValue(new Error("not found"));
+
+      const runtime = createAgyRuntime();
+      const health = await runtime.healthCheck();
+
+      expect(health.name).toBe("agy");
+      expect(health.installed).toBe(false);
+      expect(health.authenticated).toBe("unknown");
+    });
+
+    it("returns authenticated via ANTIGRAVITY_API_KEY", async () => {
+      const origKey = process.env.ANTIGRAVITY_API_KEY;
+      process.env.ANTIGRAVITY_API_KEY = "test-key-123";
+
+      execAbortableMock
+        .mockResolvedValueOnce({ stdout: "/usr/local/bin/agy", stderr: "" })
+        .mockResolvedValueOnce({ stdout: "1.4.0", stderr: "" });
+
+      const runtime = createAgyRuntime();
+      const health = await runtime.healthCheck();
+
+      expect(health.installed).toBe(true);
+      expect(health.version).toBe("1.4.0");
+      expect(health.authenticated).toBe("yes");
+      expect(health.authDetail).toBe("env: ANTIGRAVITY_API_KEY");
+
+      if (origKey !== undefined) {
+        process.env.ANTIGRAVITY_API_KEY = origKey;
+      } else {
+        delete process.env.ANTIGRAVITY_API_KEY;
+      }
+    });
+
+    it("returns authenticated via GEMINI_API_KEY", async () => {
+      const origAgy = process.env.ANTIGRAVITY_API_KEY;
+      const origGemini = process.env.GEMINI_API_KEY;
+      delete process.env.ANTIGRAVITY_API_KEY;
+      process.env.GEMINI_API_KEY = "gemini-key-123";
+
+      execAbortableMock
+        .mockResolvedValueOnce({ stdout: "/usr/local/bin/agy", stderr: "" })
+        .mockResolvedValueOnce({ stdout: "1.4.0", stderr: "" });
+
+      const runtime = createAgyRuntime();
+      const health = await runtime.healthCheck();
+
+      expect(health.installed).toBe(true);
+      expect(health.authenticated).toBe("yes");
+      expect(health.authDetail).toBe("env: GEMINI_API_KEY");
+
+      if (origAgy !== undefined) process.env.ANTIGRAVITY_API_KEY = origAgy;
+      if (origGemini !== undefined) {
+        process.env.GEMINI_API_KEY = origGemini;
+      } else {
+        delete process.env.GEMINI_API_KEY;
+      }
     });
   });
 });

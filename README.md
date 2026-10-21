@@ -14,7 +14,7 @@
 
 > Unified adapter layer for headlessly driving AI coding CLI tools.
 
-One API to execute prompts, check health, and validate models across **10 AI coding runtimes**.
+One API to execute prompts, check health, and validate models across **11 AI coding runtimes**.
 
 ## Supported Runtimes
 
@@ -30,6 +30,7 @@ One API to execute prompts, check health, and validate models across **10 AI cod
 | Droid | `droid` | expect-script | yes |
 | MastraCode | `mastracode` | expect-script | yes |
 | Copilot | `gh` | file-ref | no |
+| Antigravity | `agy` | file-ref | no |
 
 ## Install
 
@@ -44,7 +45,7 @@ import { getRuntime, getAllRuntimes, getRuntimeNames } from "valet"
 
 // List all available runtimes
 const names = getRuntimeNames()
-// ["claude", "codex", "gemini", "kimi", "coderabbit", "opencode", "pi", "droid", "mastracode", "copilot"]
+// ["claude", "codex", "gemini", "kimi", "coderabbit", "opencode", "pi", "droid", "mastracode", "copilot", "agy"]
 
 // Get a specific runtime adapter
 const claude = getRuntime("claude")

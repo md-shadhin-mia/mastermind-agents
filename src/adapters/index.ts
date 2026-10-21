@@ -17,3 +17,4 @@ export { createAdapter as pi } from "./pi.js";
 export { createAdapter as droid } from "./droid.js";
 export { createAdapter as mastracode } from "./mastracode.js";
 export { createAdapter as copilot } from "./copilot.js";
+export { createAdapter as agy } from "./agy.js";

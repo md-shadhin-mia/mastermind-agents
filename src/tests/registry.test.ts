@@ -14,13 +14,14 @@ describe("registry", () => {
       "droid",
       "mastracode",
       "copilot",
+      "agy",
     ]);
   });
 
   it("creates each runtime adapter", () => {
     const runtimes = getAllRuntimes();
 
-    expect(runtimes).toHaveLength(10);
+    expect(runtimes).toHaveLength(11);
     expect(runtimes.map((runtime) => runtime.name)).toEqual(getRuntimeNames());
   });
 
@@ -33,7 +34,7 @@ describe("registry", () => {
 
   it("throws a helpful error for unknown runtimes", () => {
     expect(() => getRuntime("missing")).toThrowError(
-      'Unknown runtime: "missing". Available: claude, codex, gemini, kimi, coderabbit, opencode, pi, droid, mastracode, copilot',
+      'Unknown runtime: "missing". Available: claude, codex, gemini, kimi, coderabbit, opencode, pi, droid, mastracode, copilot, agy',
     );
   });
 });

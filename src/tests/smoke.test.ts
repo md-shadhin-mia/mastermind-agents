@@ -103,7 +103,8 @@ IMPORTANT: Use exact file paths from the source headers. Do NOT abbreviate paths
     // Only test runtimes that support custom prompts and are headless-friendly
     const testableRuntimes = runtimes.filter(
       (r) =>
-        r.supportsCustomPrompt && ["claude", "codex", "gemini", "kimi", "copilot"].includes(r.name),
+        r.supportsCustomPrompt &&
+        ["claude", "codex", "gemini", "kimi", "copilot", "agy"].includes(r.name),
     );
 
     for (const runtime of testableRuntimes) {
